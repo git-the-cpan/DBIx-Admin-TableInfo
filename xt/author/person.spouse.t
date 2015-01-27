@@ -107,10 +107,8 @@ SQL
 create table $table_name
 (
 	id        $primary_key,
-	person_id integer not null,
-	spouse_id integer not null,
-	foreign key(person_id) references people(id),
-	foreign key(spouse_id) references people(id)
+	person_id integer, index(person_id), foreign key(person_id) references people(id),
+	spouse_id integer, index(spouse_id), foreign key(spouse_id) references people(id)
 ) $engine
 SQL
 		}
@@ -130,15 +128,17 @@ SQL
 	ok($$table_info{people}{foreign_keys}[0]{$primary_index} eq 'people',  'Primary table name for foreign key 1');
 	ok($$table_info{people}{foreign_keys}[0]{$foreign_index} eq 'spouses', 'Foreign table name for foreign key 1');
 
+	$test_count += 2;
+
 	# MySQL can drop an index if another index can be used.
 
 	if ($#{$$table_info{people}{foreign_keys} } > 0)
 	{
 		ok($$table_info{people}{foreign_keys}[1]{$primary_index} eq 'people',  'Primary table name for foreign key 2');
 		ok($$table_info{people}{foreign_keys}[1]{$foreign_index} eq 'spouses', 'Foreign table name for foreign key 2');
-	}
 
-	$test_count += 4;
+		$test_count += 2;
+	}
 
 #=pod
 
